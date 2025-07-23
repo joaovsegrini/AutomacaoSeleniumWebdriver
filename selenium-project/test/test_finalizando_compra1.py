@@ -14,11 +14,11 @@ driver.find_element(By.ID, "user-name").send_keys("standard_user")
 driver.find_element(By.ID, "password").send_keys("secret_sauce")
 driver.find_element(By.ID, "login-button").click()
 
-# Add mochila ao carrinho
+# Adicionando mochila ao carrinho
 driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").click()
 driver.find_element(By.XPATH, "//*[text()='ADD TO CART']").click()
 
-# Verificando add da mochila
+# Verificando adição da mochila
 driver.find_element(By.XPATH, "//*[@class='shopping_cart_link fa-layers fa-fw']").click()
 assert driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
 
