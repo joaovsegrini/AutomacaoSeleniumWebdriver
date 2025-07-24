@@ -1,5 +1,5 @@
 # O assert sempre verifica se o retorno da condição é true
-assert True
+# assert True
 
 # assert number
 # num_esperado = 3

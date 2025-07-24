@@ -5,6 +5,7 @@ Este repositório contém scripts e anotações referentes aos meus estudos com 
 ## 🚀 Tecnologias Utilizadas
 
 - Python 3.13.5
+- Pytest
 - Selenium WebDriver
 - Google Chrome + ChromeDriver
 - PyCharm
