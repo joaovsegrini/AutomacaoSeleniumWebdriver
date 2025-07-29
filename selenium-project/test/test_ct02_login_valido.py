@@ -1,13 +1,18 @@
 import pytest
-from selenium.webdriver.common.by import By
-import conftest
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
+
 
 @pytest.mark.usefixtures("setup_teardown")
 @pytest.mark.login
 class TestCT02:
     def test_CT02_login_valido(self):
-        driver = conftest.driver
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("secret_sauce")
-        driver.find_element(By.ID, "login-button").click()
-        assert driver.find_element(By.XPATH, "//*[@class='product_label']").is_displayed()
+        # Instacia os objetos
+        login_page = LoginPage()
+        home_page = HomePage()
+
+        # Realiza login
+        login_page.fazer_login("standard_user", "secret_sauce")
+
+        # Verifica se o login foi realizado
+        home_page.verificar_login_com_sucesso()

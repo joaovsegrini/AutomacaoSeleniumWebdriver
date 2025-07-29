@@ -1,14 +1,24 @@
 import pytest
 from selenium.webdriver.common.by import By
-import conftest
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
 
 
 @pytest.mark.usefixtures("setup_teardown")
 @pytest.mark.login
 class TestCT03:
     def test_CT03_login_valido(self):
-        driver = conftest.driver
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("secret_sauce111")
-        driver.find_element(By.ID, "login-button").click()
-        assert driver.find_element(By.XPATH, "//*[@data-test='error']").is_displayed()
+        mensagem_erro_esperada = "Epic sadface: Username and password do not match any user in this service"
+
+        # Instacia os objetos
+        login_page = LoginPage()
+        home_page = HomePage()
+
+        # Realiza login
+        login_page.fazer_login("standard_user", "secret_saucezz")
+
+        # Verificar se o login não foi realizado
+        login_page.verificar_mensagem_erro_login()
+
+        #Verifica o texto da mensagem de erro
+        login_page.verificar_texto_mensagemm_erro_login(mensagem_erro_esperada)
