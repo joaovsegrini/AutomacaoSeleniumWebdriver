@@ -1,47 +1,51 @@
 import pytest
-from selenium.webdriver.common.by import By
-import conftest
+from pages.carrinho_page import CarrinhoPage
+from pages.finalizar_compra_page import FinalizarCompra
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
+from pages.pagamento_informacoes import PagamentoInformacoes
 
 
 @pytest.mark.usefixtures("setup_teardown")
 @pytest.mark.finalizando
 class TestCT05:
-    def test_ct05_finalizar_compra1(self):
-        driver = conftest.driver
-        # Login
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("secret_sauce")
-        driver.find_element(By.ID, "login-button").click()
+    def test_ct05_finalizando_compra2(self):
+        login_page = LoginPage()
+        home_page = HomePage()
+        carrinho_page = CarrinhoPage()
+        pagamento_informacoes = PagamentoInformacoes()
+        finalizando_compra = FinalizarCompra()
 
-        # Adicionando mochila ao carrinho
-        driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").click()
-        driver.find_element(By.XPATH, "//*[text()='ADD TO CART']").click()
+        produto_1 = "Sauce Labs Backpack"
+        produto_2 = "Sauce Labs Bike Light"
 
-        # Verificando adição da mochila
-        driver.find_element(By.XPATH, "//*[@class='shopping_cart_link fa-layers fa-fw']").click()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
+        # Realiza login
+        login_page.fazer_login("standard_user", "secret_sauce")
+
+        # Add produto ao carrinho
+        home_page.adicionar_ao_carrinho(produto_1)
+
+        # Verificando produto
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_1)
 
         # Retornando a shooping
-        driver.find_element(By.XPATH, "//*[@class='btn_secondary']").click()
+        carrinho_page.clicar_continuar_comprando()
 
         # Adicionando novo produto
-        driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Bike Light']").click()
-        driver.find_element(By.XPATH, "//*[text()='ADD TO CART']").click()
+        home_page.adicionar_ao_carrinho(produto_2)
 
         # Verificando os 2 produtos no carrinho
-        driver.find_element(By.XPATH, "//*[@class='shopping_cart_link fa-layers fa-fw']").click()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Bike Light']").is_displayed()
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_1)
+        carrinho_page.verificar_produto_carrinho_existe(produto_2)
 
-        # Finalizando compra
-        driver.find_element(By.XPATH, "//*[@class='btn_action checkout_button']").click()
-        driver.find_element(By.ID, "first-name").send_keys("Matheus")
-        driver.find_element(By.ID, "last-name").send_keys("Silva")
-        driver.find_element(By.ID, "postal-code").send_keys("120007145")
-        driver.find_element(By.XPATH, "//*[@class='btn_primary cart_button']").click()
-        driver.find_element(By.XPATH, "//*[@class='btn_action cart_button']").click()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='complete-header' and text()='THANK YOU FOR YOUR ORDER']").is_displayed()
+        # Pagamento da compra
+        pagamento_informacoes.clicar_botao_pagamento()
+        pagamento_informacoes.preencher_informacoes("Matheus", "Silva", "1234567")
+
+        #Finalizando a compra
+        finalizando_compra.verificar_produto_final(produto_1)
+        finalizando_compra.verificar_produto_final(produto_2)
+        finalizando_compra.botao_finalizando_compra()
+        finalizando_compra.compra_finalizada()

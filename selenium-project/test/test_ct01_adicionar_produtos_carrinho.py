@@ -1,37 +1,37 @@
 import pytest
-from selenium.webdriver.common.by import By
-import conftest
+from pages.carrinho_page import CarrinhoPage
+from pages.home_page import HomePage
+from pages.login_page import LoginPage
 
 
 @pytest.mark.usefixtures("setup_teardown")
 @pytest.mark.carrinho
 class TestCT01:
     def test_ct01_adicionar_produtos_carrinho(self):
-        driver = conftest.driver
-        # Login
-        driver.find_element(By.ID, "user-name").send_keys("standard_user")
-        driver.find_element(By.ID, "password").send_keys("secret_sauce")
-        driver.find_element(By.ID, "login-button").click()
+        login_page = LoginPage()
+        home_page = HomePage()
+        carrinho_page = CarrinhoPage()
+
+        produto_1 = "Sauce Labs Backpack"
+        produto_2 = "Sauce Labs Bike Light"
+
+        # Realiza login
+        login_page.fazer_login("standard_user", "secret_sauce")
 
         # Add mochila ao carrinho
-        driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").click()
-        driver.find_element(By.XPATH, "//*[text()='ADD TO CART']").click()
+        home_page.adicionar_ao_carrinho(produto_1)
 
         # Verificando add da mochila
-        driver.find_element(By.XPATH, "//*[@class='shopping_cart_link fa-layers fa-fw']").click()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_1)
 
         # Retornando a shooping
-        driver.find_element(By.XPATH, "//*[@class='btn_secondary']").click()
+        carrinho_page.clicar_continuar_comprando()
 
         # Add novo produto
-        driver.find_element(By.XPATH, "//*[@class='inventory_item_name' and text()='Sauce Labs Bike Light']").click()
-        driver.find_element(By.XPATH, "//*[text()='ADD TO CART']").click()
+        home_page.adicionar_ao_carrinho(produto_2)
 
         # Verificando os 2 produtos no carrinho
-        driver.find_element(By.XPATH, "//*[@class='shopping_cart_link fa-layers fa-fw']").click()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Backpack']").is_displayed()
-        assert driver.find_element(By.XPATH,
-                                   "//*[@class='inventory_item_name' and text()='Sauce Labs Bike Light']").is_displayed()
+        home_page.acessar_carrinho()
+        carrinho_page.verificar_produto_carrinho_existe(produto_1)
+        carrinho_page.verificar_produto_carrinho_existe(produto_2)
